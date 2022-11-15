@@ -74,14 +74,13 @@ else if (ir_valid[8] & ir_ready[8]) ir_valid[8] <= 0;
 else if (all_ir_cond)               ir_valid[8] <= 1;
 else                                ir_valid[8] <= ir_valid[8];
 
-//if no trigger is set data is captured at every clock cycle
-//otherwise capture on trigger
 generate
 for (i = 0; i < WIDTH; i = i + 1) begin
   always @(posedge clock)
-  if (reset)                        dout[i] <= 0;
-  else if (conf_0[i] & conf_0[i+8]) dout[i] <= io[i];
-  else                              dout[i] <= dout[i];
+  if (reset)                          dout[i] <= 0;
+  else if ( conf_0[i] & conf_0[i+8])  dout[i] <= io[i];
+  else if (~conf_0[i] & conf_0[i+8])  dout[i] <= din_buf[i];
+  else                                dout[i] <= dout[i];
 end
 endgenerate
 
